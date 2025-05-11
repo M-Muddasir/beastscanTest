@@ -58,13 +58,43 @@ const Card = (function() {
     const editBtn = card.querySelector('.edit-btn');
     const deleteBtn = card.querySelector('.delete-btn');
     
-    upvoteBtn.addEventListener('click', () => {
+    // Set initial active state based on userVote
+    if (data.userVote === 'up') {
+      upvoteBtn.classList.add('active');
+    } else if (data.userVote === 'down') {
+      downvoteBtn.classList.add('active');
+    }
+    
+    // Add click events with ripple effect
+    upvoteBtn.addEventListener('click', (e) => {
+      createRippleEffect(e);
       if (handlers.onVote) handlers.onVote(data.id, 'up');
     });
     
-    downvoteBtn.addEventListener('click', () => {
+    downvoteBtn.addEventListener('click', (e) => {
+      createRippleEffect(e);
       if (handlers.onVote) handlers.onVote(data.id, 'down');
     });
+    
+    // Helper function to create ripple effect
+    function createRippleEffect(e) {
+      const button = e.currentTarget;
+      const circle = document.createElement('span');
+      const diameter = Math.max(button.clientWidth, button.clientHeight);
+      
+      circle.style.width = circle.style.height = `${diameter}px`;
+      circle.style.left = `${e.clientX - button.getBoundingClientRect().left - diameter / 2}px`;
+      circle.style.top = `${e.clientY - button.getBoundingClientRect().top - diameter / 2}px`;
+      circle.classList.add('ripple');
+      
+      // Remove existing ripples
+      const ripple = button.querySelector('.ripple');
+      if (ripple) {
+        ripple.remove();
+      }
+      
+      button.appendChild(circle);
+    }
     
     editBtn.addEventListener('click', () => {
       if (handlers.onEdit) handlers.onEdit(data);
@@ -117,6 +147,8 @@ const Card = (function() {
     this.classList.add('dragging');
     e.dataTransfer.setData('text/plain', this.dataset.id);
     e.dataTransfer.effectAllowed = 'move';
+    // Store a reference to the dragged element
+    window.draggedElement = this;
   }
   
   function handleDragOver(e) {
@@ -131,22 +163,37 @@ const Card = (function() {
   
   function handleDrop(e) {
     e.preventDefault();
+    e.stopPropagation(); // Stop the event from propagating to parent elements
+    
     this.classList.remove('drag-over');
     
     const draggedId = e.dataTransfer.getData('text/plain');
     const targetId = this.dataset.id;
     
-    if (draggedId !== targetId) {
+    if (draggedId && targetId && draggedId !== targetId) {
+      console.log('Dropping card', draggedId, 'onto', targetId);
+      
+      // Create a custom event with the drag information
       const dropEvent = new CustomEvent('card:reorder', {
-        bubbles: true,
+        bubbles: true, // Allow the event to bubble up to parent elements
+        cancelable: true,
         detail: {
           draggedId,
           targetId
         }
       });
       
-      this.dispatchEvent(dropEvent);
+      // Dispatch the event from the container element to ensure it's captured
+      const container = document.getElementById('cards-container');
+      if (container) {
+        container.dispatchEvent(dropEvent);
+      } else {
+        // Fallback to dispatching from the card itself
+        this.dispatchEvent(dropEvent);
+      }
     }
+    
+    return false; // Prevent any default browser drag-drop handling
   }
   
   function handleDragEnd() {
@@ -155,6 +202,9 @@ const Card = (function() {
     document.querySelectorAll('.card').forEach(card => {
       card.classList.remove('drag-over');
     });
+    
+    // Clean up the global reference
+    window.draggedElement = null;
   }
   
   return {

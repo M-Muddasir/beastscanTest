@@ -75,22 +75,60 @@
     
     if (!card) return;
     
+    // Get the cardElement to apply animations
+    const cardElement = document.querySelector(`.card[data-id="${id}"]`);
+    const voteBtn = cardElement?.querySelector(`.${voteType}vote`);
+    const voteCountElement = cardElement?.querySelector('.vote-count');
+    
+    // Handle the vote logic
     if (card.userVote === voteType) {
+      // Clicking the same button again - remove the vote
       card.votes[voteType] -= 1;
       card.userVote = null;
-    } 
-    else if (card.userVote) {
-      card.votes[card.userVote] -= 1;
-      card.votes[voteType] += 1;
-      card.userVote = voteType;
+      
+      // Remove active state from button
+      if (voteBtn) voteBtn.classList.remove('active');
     } 
     else {
+      // If user already voted on the other option, remove that vote first
+      if (card.userVote) {
+        card.votes[card.userVote] -= 1;
+        
+        // Remove active state from the previous button
+        const previousBtn = cardElement?.querySelector(`.${card.userVote}vote`);
+        if (previousBtn) previousBtn.classList.remove('active');
+      }
+      
+      // Add the new vote
       card.votes[voteType] += 1;
       card.userVote = voteType;
+      
+      // Add active state to the clicked button
+      if (voteBtn) voteBtn.classList.add('active');
     }
     
+    // Update the UI with a nice animation
+    if (voteCountElement) {
+      const totalVotes = (card.votes.up || 0) - (card.votes.down || 0);
+      
+      // Add pulse animation class
+      voteCountElement.classList.add('vote-pulse');
+      
+      // Update the text after a short delay
+      setTimeout(() => {
+        voteCountElement.textContent = totalVotes;
+        
+        // Remove the animation class after it completes
+        setTimeout(() => {
+          voteCountElement.classList.remove('vote-pulse');
+        }, 300);
+      }, 50);
+    }
+    
+    // Update the card data
     cardList.updateCard(id, card);
     
+    // Save to storage
     saveToStorage(STORAGE_KEY, cardList.getCards());
   }
   

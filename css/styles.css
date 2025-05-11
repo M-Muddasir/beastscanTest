@@ -168,22 +168,82 @@ h1 {
 .vote-btn {
   background: none;
   border: none;
+  color: var(--text-muted);
   cursor: pointer;
-  color: var(--secondary-color);
-  transition: var(--transition);
   font-size: 1.2rem;
+  padding: 0;
+  transition: all 0.2s ease;
+  position: relative;
+  outline: none;
 }
 
 .vote-btn:hover {
   color: var(--primary-color);
+  transform: scale(1.2);
+}
+
+.vote-btn:active {
+  transform: scale(0.9);
+}
+
+.vote-btn.active {
+  color: var(--primary-color);
+  font-weight: bold;
 }
 
 .upvote.active {
-  color: var(--success-color);
+  color: #4caf50; /* Green for upvote */
 }
 
 .downvote.active {
-  color: var(--danger-color);
+  color: #f44336; /* Red for downvote */
+}
+
+/* Vote count animation */
+.vote-count {
+  transition: all 0.2s ease;
+  display: inline-block;
+}
+
+@keyframes votePulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.3); }
+  100% { transform: scale(1); }
+}
+
+.vote-pulse {
+  animation: votePulse 0.3s ease-in-out;
+  font-weight: bold;
+}
+
+/* Ripple effect for buttons */
+.vote-btn {
+  position: relative;
+  overflow: hidden;
+}
+
+.ripple {
+  position: absolute;
+  border-radius: 50%;
+  background-color: rgba(74, 108, 247, 0.3);
+  transform: scale(0);
+  animation: ripple-animation 0.6s linear;
+  pointer-events: none;
+}
+
+.upvote .ripple {
+  background-color: rgba(76, 175, 80, 0.3); /* Green ripple */
+}
+
+.downvote .ripple {
+  background-color: rgba(244, 67, 54, 0.3); /* Red ripple */
+}
+
+@keyframes ripple-animation {
+  to {
+    transform: scale(4);
+    opacity: 0;
+  }
 }
 
 .vote-count {
