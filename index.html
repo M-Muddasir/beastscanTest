@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="BeastScan Upvote Challenge - A dynamic voting widget for ideas">
+    <title>BeastScan Upvote Challenge</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>BeastScan Ideas</h1>
+            <div class="controls">
+                <button id="add-idea-btn" class="btn primary" aria-label="Add new idea">
+                    <i class="fas fa-plus" aria-hidden="true"></i> Add New Idea
+                </button>
+                <button id="sort-btn" class="btn secondary" aria-label="Sort ideas by votes">
+                    <i class="fas fa-sort-amount-down" aria-hidden="true"></i> Sort by Votes
+                </button>
+                <button id="reset-btn" class="btn danger" aria-label="Reset all ideas">
+                    <i class="fas fa-redo" aria-hidden="true"></i> Reset All
+                </button>
+            </div>
+        </header>
+        <main id="cards-container" class="cards-container"></main>
+    </div>
+    
+    <!-- Edit Modal -->
+    <div id="edit-modal" class="modal" aria-labelledby="edit-modal-title" aria-hidden="true">
+        <div class="modal-content">
+            <span class="close" aria-label="Close">&times;</span>
+            <h2 id="edit-modal-title">Edit Card</h2>
+            <form id="edit-form">
+                <input type="hidden" id="edit-id" name="edit-id">
+                <div class="form-group">
+                    <label for="edit-title">Title</label>
+                    <input type="text" id="edit-title" name="edit-title" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit-description">Description</label>
+                    <textarea id="edit-description" name="edit-description" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="edit-image">Image URL</label>
+                    <input type="url" id="edit-image" name="edit-image" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit-button-label">Button Label</label>
+                    <input type="text" id="edit-button-label" name="edit-buttonLabel" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit-button-link">Button Link</label>
+                    <input type="url" id="edit-button-link" name="edit-buttonLink" required>
+                </div>
+                <button type="submit" class="btn primary">Save Changes</button>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Add Card Modal -->
+    <div id="add-modal" class="modal" aria-labelledby="add-modal-title" aria-hidden="true">
+        <div class="modal-content">
+            <span class="close" aria-label="Close">&times;</span>
+            <h2 id="add-modal-title">Add New Idea</h2>
+            <form id="add-form">
+                <div class="form-group">
+                    <label for="add-title">Title</label>
+                    <input type="text" id="add-title" name="add-title" required>
+                </div>
+                <div class="form-group">
+                    <label for="add-description">Description</label>
+                    <textarea id="add-description" name="add-description" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="add-image">Image URL</label>
+                    <input type="url" id="add-image" name="add-image" required placeholder="https://example.com/image.jpg">
+                </div>
+                <div class="form-group">
+                    <label for="add-button-label">Button Label</label>
+                    <input type="text" id="add-button-label" name="add-buttonLabel" required>
+                </div>
+                <div class="form-group">
+                    <label for="add-button-link">Button Link</label>
+                    <input type="url" id="add-button-link" name="add-buttonLink" required placeholder="https://example.com">
+                </div>
+                <button type="submit" class="btn primary">Add Idea</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- JavaScript Modules -->
+    <script src="js/components/Card.js"></script>
+    <script src="js/components/Modal.js"></script>
+    <script src="js/components/CardList.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
